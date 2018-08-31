@@ -103,6 +103,16 @@ def press_buttons(start, operations):
                 exponent = re.split('[^0-9]+', button)
                 results.append(float(start ** int(exponent[1])))
 
+        # shift left
+        elif button == "<" or button == "<shift":
+            start_str = str(start)
+            results.append(float(start_str[1:] + start_str[0]))
+
+        # shift right
+        elif button == ">" or button == "shift>":
+            start_str = str(start)
+            results.append(float(start_str[-1] + start_str[:-1]))
+
     # cast floats to ints where applicable
     with_ints = []
     for n in results:

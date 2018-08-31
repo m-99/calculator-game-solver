@@ -53,11 +53,11 @@ def press_buttons(start, operations):
             results.append(float(start * -1))
 
         # addition/subtraction
-        elif button[1].isdigit() and (button.startswith("+") or button.startswith("-")):
+        elif button[-1].isdigit() and (button.startswith("+") or button.startswith("-")):
             results.append(start + float(button))
 
         # multiplication
-        elif button[1].isdigit() and (button.startswith("*") or button.startswith("x")):
+        elif button[-1].isdigit() and (button.startswith("*") or button.startswith("x")):
             results.append(start * float(button[1:]))
 
         # division

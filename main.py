@@ -1,3 +1,5 @@
+import re
+
 def solver(start, end, max_steps, operations):
     # first find the parents
     stack = [start]
@@ -13,14 +15,19 @@ def solver(start, end, max_steps, operations):
                 continue
             children = press_buttons(current, operations)
             for child in children:
-                if child not in visited:
+                # if not visited or found more efficient way to reach here
+                if child not in visited or depth[child] > depth[current] + 1:
                     visited.add(child)
                     stack.append(child)
                     parents[child] = current
                     depth[child] = depth[current] + 1
+                    # print("parent", current)
+                    # print("child", child)
+                    # print("depth", depth[child])
                     # end early
                     if child == end:
                         break
+            print()
         # then construct the path
         else:
             path = []
@@ -35,24 +42,30 @@ def solver(start, end, max_steps, operations):
 # returns all of the resulting numbers from pressing all the buttons
 def press_buttons(start, operations):
     buttons = operations.split()
+    # floats
     results = []
     for button in buttons:
         button.lower()
+
         # append number
         if button.isdigit():
             results.append(float(str(start) + str(button)))
+
         # addition/subtraction
         if button.startswith("+") or button.startswith("-"):
             results.append(start + float(button))
+
         # multiplication
         if button.startswith("*") or button.startswith("x"):
             results.append(start * float(button[1:]))
+
         # division
         if button.startswith("/"):
             n = start / float(button[1:])
             # limit to hundreths
             if len(str(n).split('.')[1]) <= 2:
                 results.append(n)
+
         # backspace
         if button.startswith("<<") or button.startswith("b"):
             n = str(start)[:-1]
@@ -60,22 +73,36 @@ def press_buttons(start, operations):
             if not n:
                 n = 0
             results.append(float(n))
+
         # swap number
-        if "=>" in button:
-            nums = button.split("=>")
+        if "=>" in button or "to" in button:
+            nums = re.split('[^0-9]+', button)
             results.append(float(str(start).replace(str(nums[0]), str(nums[1]))))
+
         # reverse
         if button.startswith("r") or button.startswith("reverse"):
             results.append(float(str(start)[::-1]))
 
+        # sum
+        if button.startswith("s") or button.startswith("sum"):
+            sum = 0
+            if isinstance(start, int):
+                for digit in str(start):
+                    sum += int(digit)
+            results.append(float(sum))
+
+    print("results", results)
+    # cast floats to ints where applicable
     with_ints = []
     for n in results:
         if n.is_integer():
             with_ints.append(int(n))
         else:
             with_ints.append(n)
+    print("with_ints", with_ints)
     # filter out numbers with more than six digits
     filtered = [x for x in with_ints if len(str(x)) <= 6]
+    print("filtered", filtered)
     return filtered
 
 

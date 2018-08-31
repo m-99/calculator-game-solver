@@ -32,6 +32,7 @@ def solver(start, end, max_steps, operations):
                 current = parents[current]
             return path
     # No solution
+    print(parents)
     return None
 
 # operations is a string of all of the buttons seperated by spaces
@@ -47,23 +48,27 @@ def press_buttons(start, operations):
         if button.isdigit():
             results.append(float(str(start) + str(button)))
 
+        # invert sign
+        elif button == "+/-" or button == "+-":
+            results.append(float(start * -1))
+
         # addition/subtraction
-        if button.startswith("+") or button.startswith("-"):
+        elif button.startswith("+") or button.startswith("-"):
             results.append(start + float(button))
 
         # multiplication
-        if button.startswith("*") or button.startswith("x"):
+        elif button.startswith("*") or button.startswith("x"):
             results.append(start * float(button[1:]))
 
         # division
-        if button.startswith("/"):
+        elif button.startswith("/"):
             n = start / float(button[1:])
             # limit to hundreths
             if len(str(n).split('.')[1]) <= 2:
                 results.append(n)
 
         # backspace
-        if button.startswith("<<") or button.startswith("b"):
+        elif button == "<<" or button == "b":
             n = str(start)[:-1]
             # n = 0 if backspace results in no numbers
             if not n:
@@ -71,22 +76,26 @@ def press_buttons(start, operations):
             results.append(float(n))
 
         # swap number, only works on ints
-        if "=>" in button or "to" in button:
+        elif "=>" in button or "to" in button:
             if float(start).is_integer():
                 nums = re.split('[^0-9]+', button)
                 results.append(float(str(start).replace(str(nums[0]), str(nums[1]))))
 
         # reverse
-        if button.startswith("r") or button.startswith("reverse"):
+        elif button == "r" or button == "reverse":
             results.append(float(str(start)[::-1]))
 
         # sum
-        if button.startswith("s") or button.startswith("sum"):
+        elif button == "s" or button == "sum":
             sum = 0
+            if start < 0:
+                sign = -1
+            else:
+                sign = 1
             if isinstance(start, int):
-                for digit in str(start):
+                for digit in str(start).replace("-", ""):
                     sum += int(digit)
-            results.append(float(sum))
+            results.append(float(sum) * sign)
 
     # cast floats to ints where applicable
     with_ints = []

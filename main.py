@@ -81,9 +81,14 @@ def press_buttons(start, operations):
                 nums = re.split('[^0-9]+', button)
                 results.append(float(str(start).replace(str(nums[0]), str(nums[1]))))
 
-        # reverse
+        # reverse, only works on ints
         elif button == "r" or button == "reverse":
-            results.append(float(str(start)[::-1]))
+            start_str = str(start).replace("-", "")
+            if start < 0:
+                sign = -1
+            else:
+                sign = 1
+            results.append(float(start_str[::-1]) * sign)
 
         # sum
         elif button == "s" or button == "sum":
@@ -122,6 +127,16 @@ def press_buttons(start, operations):
                 sign = 1
             if isinstance(start, int):
                 results.append(float(start_str[-1] + start_str[:-1]))
+
+        # mirror, only works on ints
+        elif button == "m" or button == "mirror":
+            start_str = str(start).replace("-", "")
+            if start < 0:
+                sign = -1
+            else:
+                sign = 1
+            if isinstance(start, int):
+                results.append(float(start_str + start_str[::-1]))
 
     # cast floats to ints where applicable
     with_ints = []

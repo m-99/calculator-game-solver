@@ -53,11 +53,11 @@ def press_buttons(start, operations):
             results.append(float(start * -1))
 
         # addition/subtraction
-        elif button.startswith("+") or button.startswith("-"):
+        elif button[1].isdigit() and (button.startswith("+") or button.startswith("-")):
             results.append(start + float(button))
 
         # multiplication
-        elif button.startswith("*") or button.startswith("x"):
+        elif button[1].isdigit() and (button.startswith("*") or button.startswith("x")):
             results.append(start * float(button[1:]))
 
         # division
@@ -77,7 +77,7 @@ def press_buttons(start, operations):
 
         # swap number, only works on ints
         elif "=>" in button or "to" in button:
-            if float(start).is_integer():
+            if isinstance(start, int):
                 nums = re.split('[^0-9]+', button)
                 results.append(float(str(start).replace(str(nums[0]), str(nums[1]))))
 
@@ -96,6 +96,12 @@ def press_buttons(start, operations):
                 for digit in str(start).replace("-", ""):
                     sum += int(digit)
             results.append(float(sum) * sign)
+
+        # exponents, only works on ints
+        elif "^" in button:
+            if isinstance(start, int):
+                exponent = re.split('[^0-9]+', button)
+                results.append(float(start ** int(exponent[1])))
 
     # cast floats to ints where applicable
     with_ints = []

@@ -21,13 +21,9 @@ def solver(start, end, max_steps, operations):
                     stack.append(child)
                     parents[child] = current
                     depth[child] = depth[current] + 1
-                    # print("parent", current)
-                    # print("child", child)
-                    # print("depth", depth[child])
                     # end early
                     if child == end:
                         break
-            print()
         # then construct the path
         else:
             path = []
@@ -74,10 +70,11 @@ def press_buttons(start, operations):
                 n = 0
             results.append(float(n))
 
-        # swap number
+        # swap number, only works on ints
         if "=>" in button or "to" in button:
-            nums = re.split('[^0-9]+', button)
-            results.append(float(str(start).replace(str(nums[0]), str(nums[1]))))
+            if float(start).is_integer():
+                nums = re.split('[^0-9]+', button)
+                results.append(float(str(start).replace(str(nums[0]), str(nums[1]))))
 
         # reverse
         if button.startswith("r") or button.startswith("reverse"):
@@ -91,7 +88,6 @@ def press_buttons(start, operations):
                     sum += int(digit)
             results.append(float(sum))
 
-    print("results", results)
     # cast floats to ints where applicable
     with_ints = []
     for n in results:
@@ -99,10 +95,8 @@ def press_buttons(start, operations):
             with_ints.append(int(n))
         else:
             with_ints.append(n)
-    print("with_ints", with_ints)
     # filter out numbers with more than six digits
     filtered = [x for x in with_ints if len(str(x)) <= 6]
-    print("filtered", filtered)
     return filtered
 
 
